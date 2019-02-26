@@ -30,22 +30,22 @@ class AssetPoolAccount():
         self.recylce_principal[dates_recycle[0]] = ACFa['total_recycle_principal'][pd.to_datetime(ACFa['date_recycle']) <= dates_recycle[0]].sum()
         
         self.recylce_principal_overdue_1_30_currentTerm = {k:ACFa[pd.to_datetime(ACFa['date_recycle']) == k]['principal_overdue_1_30_currentTerm'].sum() for k in dates_recycle}
-        self.recylce_principal_overdue_1_30_currentTerm[dates_recycle[0]] = ACFa['principal_overdue_1_30_currentTerm'][pd.to_datetime(ACFa['date_recycle']) <= dates_recycle[0]].sum()
+        #self.recylce_principal_overdue_1_30_currentTerm[dates_recycle[0]] = ACFa['principal_overdue_1_30_currentTerm'][pd.to_datetime(ACFa['date_recycle']) <= dates_recycle[0]].sum()
         self.recylce_principal_overdue_1_30_allTerm = {k:ACFa[pd.to_datetime(ACFa['date_recycle']) == k]['principal_overdue_1_30_allTerm'].sum() for k in dates_recycle}
-        self.recylce_principal_overdue_1_30_allTerm[dates_recycle[0]] = ACFa['principal_overdue_1_30_allTerm'][pd.to_datetime(ACFa['date_recycle']) <= dates_recycle[0]].sum()
+        #self.recylce_principal_overdue_1_30_allTerm[dates_recycle[0]] = ACFa['principal_overdue_1_30_allTerm'][pd.to_datetime(ACFa['date_recycle']) <= dates_recycle[0]].sum()
         
         self.recylce_principal_overdue_31_60_currentTerm = {k:ACFa[pd.to_datetime(ACFa['date_recycle']) == k]['principal_overdue_31_60_currentTerm'].sum() for k in dates_recycle}
-        self.recylce_principal_overdue_31_60_currentTerm[dates_recycle[0]] = ACFa['principal_overdue_31_60_currentTerm'][pd.to_datetime(ACFa['date_recycle']) <= dates_recycle[0]].sum()
+        #self.recylce_principal_overdue_31_60_currentTerm[dates_recycle[0]] = ACFa['principal_overdue_31_60_currentTerm'][pd.to_datetime(ACFa['date_recycle']) <= dates_recycle[0]].sum()
         self.recylce_principal_overdue_31_60_allTerm = {k:ACFa[pd.to_datetime(ACFa['date_recycle']) == k]['principal_overdue_31_60_allTerm'].sum() for k in dates_recycle}
-        self.recylce_principal_overdue_31_60_allTerm[dates_recycle[0]] = ACFa['principal_overdue_31_60_allTerm'][pd.to_datetime(ACFa['date_recycle']) <= dates_recycle[0]].sum()
+        #self.recylce_principal_overdue_31_60_allTerm[dates_recycle[0]] = ACFa['principal_overdue_31_60_allTerm'][pd.to_datetime(ACFa['date_recycle']) <= dates_recycle[0]].sum()
         
         self.recylce_principal_overdue_61_90_currentTerm = {k:ACFa[pd.to_datetime(ACFa['date_recycle']) == k]['principal_overdue_61_90_currentTerm'].sum() for k in dates_recycle}
-        self.recylce_principal_overdue_61_90_currentTerm[dates_recycle[0]] = ACFa['principal_overdue_61_90_currentTerm'][pd.to_datetime(ACFa['date_recycle']) <= dates_recycle[0]].sum()
+        #self.recylce_principal_overdue_61_90_currentTerm[dates_recycle[0]] = ACFa['principal_overdue_61_90_currentTerm'][pd.to_datetime(ACFa['date_recycle']) <= dates_recycle[0]].sum()
         self.recylce_principal_overdue_61_90_allTerm = {k:ACFa[pd.to_datetime(ACFa['date_recycle']) == k]['principal_overdue_61_90_allTerm'].sum() for k in dates_recycle}
-        self.recylce_principal_overdue_61_90_allTerm[dates_recycle[0]] = ACFa['principal_overdue_61_90_allTerm'][pd.to_datetime(ACFa['date_recycle']) <= dates_recycle[0]].sum()
+        #self.recylce_principal_overdue_61_90_allTerm[dates_recycle[0]] = ACFa['principal_overdue_61_90_allTerm'][pd.to_datetime(ACFa['date_recycle']) <= dates_recycle[0]].sum()
         
         self.recylce_principal_loss_currentTerm = {k:ACFa[pd.to_datetime(ACFa['date_recycle']) == k]['principal_loss_currentTerm'].sum() for k in dates_recycle}
-        self.recylce_principal_loss_currentTerm[dates_recycle[0]] = ACFa['principal_loss_currentTerm'][pd.to_datetime(ACFa['date_recycle']) <= dates_recycle[0]].sum()
+        #self.recylce_principal_loss_currentTerm[dates_recycle[0]] = ACFa['principal_loss_currentTerm'][pd.to_datetime(ACFa['date_recycle']) <= dates_recycle[0]].sum()
         self.recylce_principal_loss_allTerm = {k:ACFa[pd.to_datetime(ACFa['date_recycle']) == k]['principal_loss_allTerm'].sum() for k in dates_recycle}
         self.recylce_principal_loss_allTerm[dates_recycle[0]] = ACFa['principal_loss_allTerm'][pd.to_datetime(ACFa['date_recycle']) <= dates_recycle[0]].sum()
 
@@ -58,22 +58,22 @@ class AssetPoolAccount():
         self.recylce_interest[dates_recycle[0]] = ACFa['total_recycle_interest'][pd.to_datetime(ACFa['date_recycle']) <= dates_recycle[0]].sum()
         
         self.recylce_interest_overdue_1_30_currentTerm = {k:ACFa[pd.to_datetime(ACFa['date_recycle']) == k]['interest_overdue_1_30_currentTerm'].sum() for k in dates_recycle}
-        self.recylce_interest_overdue_1_30_currentTerm[dates_recycle[0]] = ACFa['interest_overdue_1_30_currentTerm'][pd.to_datetime(ACFa['date_recycle']) <= dates_recycle[0]].sum()
+        #self.recylce_interest_overdue_1_30_currentTerm[dates_recycle[0]] = ACFa['interest_overdue_1_30_currentTerm'][pd.to_datetime(ACFa['date_recycle']) <= dates_recycle[0]].sum()
         self.recylce_interest_overdue_1_30_allTerm = {k:ACFa[pd.to_datetime(ACFa['date_recycle']) == k]['interest_overdue_1_30_allTerm'].sum() for k in dates_recycle}
-        self.recylce_interest_overdue_1_30_allTerm[dates_recycle[0]] = ACFa['interest_overdue_1_30_allTerm'][pd.to_datetime(ACFa['date_recycle']) <= dates_recycle[0]].sum()
+        #self.recylce_interest_overdue_1_30_allTerm[dates_recycle[0]] = ACFa['interest_overdue_1_30_allTerm'][pd.to_datetime(ACFa['date_recycle']) <= dates_recycle[0]].sum()
         
         self.recylce_interest_overdue_31_60_currentTerm = {k:ACFa[pd.to_datetime(ACFa['date_recycle']) == k]['interest_overdue_31_60_currentTerm'].sum() for k in dates_recycle}
-        self.recylce_interest_overdue_31_60_currentTerm[dates_recycle[0]] = ACFa['interest_overdue_31_60_currentTerm'][pd.to_datetime(ACFa['date_recycle']) <= dates_recycle[0]].sum()
+        #self.recylce_interest_overdue_31_60_currentTerm[dates_recycle[0]] = ACFa['interest_overdue_31_60_currentTerm'][pd.to_datetime(ACFa['date_recycle']) <= dates_recycle[0]].sum()
         self.recylce_interest_overdue_31_60_allTerm = {k:ACFa[pd.to_datetime(ACFa['date_recycle']) == k]['interest_overdue_31_60_allTerm'].sum() for k in dates_recycle}
-        self.recylce_interest_overdue_31_60_allTerm[dates_recycle[0]] = ACFa['interest_overdue_31_60_allTerm'][pd.to_datetime(ACFa['date_recycle']) <= dates_recycle[0]].sum()
+        #self.recylce_interest_overdue_31_60_allTerm[dates_recycle[0]] = ACFa['interest_overdue_31_60_allTerm'][pd.to_datetime(ACFa['date_recycle']) <= dates_recycle[0]].sum()
         
         self.recylce_interest_overdue_61_90_currentTerm = {k:ACFa[pd.to_datetime(ACFa['date_recycle']) == k]['interest_overdue_61_90_currentTerm'].sum() for k in dates_recycle}
-        self.recylce_interest_overdue_61_90_currentTerm[dates_recycle[0]] = ACFa['interest_overdue_61_90_currentTerm'][pd.to_datetime(ACFa['date_recycle']) <= dates_recycle[0]].sum()
+        #self.recylce_interest_overdue_61_90_currentTerm[dates_recycle[0]] = ACFa['interest_overdue_61_90_currentTerm'][pd.to_datetime(ACFa['date_recycle']) <= dates_recycle[0]].sum()
         self.recylce_interest_overdue_61_90_allTerm = {k:ACFa[pd.to_datetime(ACFa['date_recycle']) == k]['interest_overdue_61_90_allTerm'].sum() for k in dates_recycle}
-        self.recylce_interest_overdue_61_90_allTerm[dates_recycle[0]] = ACFa['interest_overdue_61_90_allTerm'][pd.to_datetime(ACFa['date_recycle']) <= dates_recycle[0]].sum()
+        #self.recylce_interest_overdue_61_90_allTerm[dates_recycle[0]] = ACFa['interest_overdue_61_90_allTerm'][pd.to_datetime(ACFa['date_recycle']) <= dates_recycle[0]].sum()
         
         self.recylce_interest_loss_currentTerm = {k:ACFa[pd.to_datetime(ACFa['date_recycle']) == k]['interest_loss_currentTerm'].sum() for k in dates_recycle}
-        self.recylce_interest_loss_currentTerm[dates_recycle[0]] = ACFa['interest_loss_currentTerm'][pd.to_datetime(ACFa['date_recycle']) <= dates_recycle[0]].sum()
+        #self.recylce_interest_loss_currentTerm[dates_recycle[0]] = ACFa['interest_loss_currentTerm'][pd.to_datetime(ACFa['date_recycle']) <= dates_recycle[0]].sum()
         self.recylce_interest_loss_allTerm = {k:ACFa[pd.to_datetime(ACFa['date_recycle']) == k]['interest_loss_allTerm'].sum() for k in dates_recycle}
         self.recylce_interest_loss_allTerm[dates_recycle[0]] = ACFa['interest_loss_allTerm'][pd.to_datetime(ACFa['date_recycle']) <= dates_recycle[0]].sum()
                 
