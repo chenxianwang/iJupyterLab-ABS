@@ -28,8 +28,8 @@ logger = get_logger(__name__)
 
 class RevolvingDeal(Deal):
     
-    def __init__(self,name,date_pool_cut,date_trust_effective,RevolvingDeal_or_not,date_revolving_pools_cut,scenarios):
-        super().__init__(name,date_pool_cut,date_trust_effective,scenarios)
+    def __init__(self,name,date_pool_cut,date_trust_effective,RevolvingDeal_or_not,date_revolving_pools_cut):
+        super().__init__(name,date_pool_cut,date_trust_effective)
         
         self.RevolvingDeal = RevolvingDeal_or_not
         self.date_revolving_pools_cut = date_revolving_pools_cut
@@ -59,6 +59,17 @@ class RevolvingDeal(Deal):
         
         self.df_AP_PAcc_all_DeSimu = pd.DataFrame() 
         
+    def get_rAPCF_structure(self):
+        
+        if self.RevolvingDeal is True:
+            logger.info('get_rAPCF_structure...')
+            self.apcf_revolving_structure = self.get_rearranged_APCF_structure()
+        else:
+            logger.info('There is no rAPCF.')
+            pass
+        #save_to_excel(self.apcf_revolving_structure,'Rearrange_APCF_Structure',wb_name)
+        
+    def init_rAP_scenarios(self,scenarios):
         for scenario_id in self.scenarios.keys():
             self.CDR_R[scenario_id] = {}
             self.apcf_revolving[scenario_id] = {}
@@ -71,16 +82,8 @@ class RevolvingDeal(Deal):
             
             self.RevolvingPool_PurchaseAmount[scenario_id] = {}
             self.total_purchase_amount[scenario_id] = 0.0
-    
-    def get_rAPCF_structure(self):
         
-        if self.RevolvingDeal is True:
-            logger.info('get_rAPCF_structure...')
-            self.apcf_revolving_structure = self.get_rearranged_APCF_structure()
-        else:
-            logger.info('There is no rAPCF.')
-            pass
-        #save_to_excel(self.apcf_revolving_structure,'Rearrange_APCF_Structure',wb_name)
+        
     def init_rAP_Acc(self):
         logger.info('init_rAP_Acc...')
                 
@@ -167,7 +170,7 @@ class RevolvingDeal(Deal):
             self.AP_PAcc_reserve = deepcopy(self.AP_PAcc_reserve_O)
             self.amount_default_all = deepcopy(self.amount_default_O)
             
-            logger.info('init_rAP_Acc is done.')
+        logger.info('init_rAP_Acc is done.')
 #            logger.info('''oAP_ACC accounts consist of:  
 #            Principal Collection Accounts:
 #            self.AP_PAcc_original_R,self.AP_PAcc_actual_R,self.AP_PAcc_pay_R,self.AP_PAcc_buy_R. 
@@ -210,14 +213,13 @@ class RevolvingDeal(Deal):
             pass
         else:
  
-                for which_revolving_pool in range(1,len(self.date_revolving_pools_cut) + 1):
-                    if self.apcf_revolving_adjusted_all[scenario_id].empty :
-                        self.apcf_revolving_adjusted_all[scenario_id] = self.apcf_revolving_adjusted[scenario_id][which_revolving_pool]
-                    else: 
-                        self.apcf_revolving_adjusted_all[scenario_id] = self.apcf_revolving_adjusted_all[scenario_id].merge(self.apcf_revolving_adjusted[scenario_id][which_revolving_pool],left_on = 'date_recycle',right_on = 'date_recycle', how = 'outer')
-                
-                #logger.info('self.AP_PAcc_loss_allTerm[scenario_id][dates_recycle_list_revolving[-1]] on dates_recycle_list_revolving[-1] {0} is {1}'.format(dates_recycle_list_revolving[-1],self.AP_PAcc_loss_allTerm[scenario_id][dates_recycle_list_revolving[-1]]))
-                #logger.info('sum([self.AP_PAcc_original[scenario_id][k] for k in dates_recycle])] is {0}'.format(sum([self.AP_PAcc_original[scenario_id][k] for k in dates_recycle])))
+            for which_revolving_pool in range(1,len(self.date_revolving_pools_cut) + 1):
+                if self.apcf_revolving_adjusted_all[scenario_id].empty :
+                    self.apcf_revolving_adjusted_all[scenario_id] = self.apcf_revolving_adjusted[scenario_id][which_revolving_pool][['date_recycle','total_recycle_principal','principal_loss_allTerm','total_outstanding_principal']]
+                else: 
+                    self.apcf_revolving_adjusted_all[scenario_id] = self.apcf_revolving_adjusted_all[scenario_id].merge(self.apcf_revolving_adjusted[scenario_id][which_revolving_pool][['date_recycle','total_recycle_principal','principal_loss_allTerm','total_outstanding_principal']],left_on = 'date_recycle',right_on = 'date_recycle', how = 'outer')
+            #logger.info('self.AP_PAcc_loss_allTerm[scenario_id][dates_recycle_list_revolving[-1]] on dates_recycle_list_revolving[-1] {0} is {1}'.format(dates_recycle_list_revolving[-1],self.AP_PAcc_loss_allTerm[scenario_id][dates_recycle_list_revolving[-1]]))
+            #logger.info('sum([self.AP_PAcc_original[scenario_id][k] for k in dates_recycle])] is {0}'.format(sum([self.AP_PAcc_original[scenario_id][k] for k in dates_recycle])))
                     
     def CDR_calc_R(self,scenario_id):
         if self.RevolvingDeal is not True:
@@ -232,15 +234,13 @@ class RevolvingDeal(Deal):
                     logger.info('CDR for {0} is: {1:.4%} for Revolving Pool {2} '.format(scenario_id,self.CDR_R[scenario_id][scenario_id+'_R'+str(which_revolving_pool)][2],which_revolving_pool))
                     self.amount_default_all[scenario_id] += deepcopy(self.AP_PAcc_loss_allTerm_R[scenario_id][which_revolving_pool][self.dates_recycle_list_revolving[scenario_id][which_revolving_pool][-1]])
                 
-                save_to_excel(pd.DataFrame.from_dict(self.CDR_R[scenario_id]),'RnR&CDR',wb_name)
-    
-                self.CDR_all[scenario_id+'_All'] =  [self.amount_default_all[scenario_id],
-                                                     (amount_total_issuance+sum([self.RevolvingPool_PurchaseAmount[scenario_id][r] for r in range(1,nbr_revolving_pools+1)])),
-                                                     self.amount_default_all[scenario_id] / (amount_total_issuance+sum([self.RevolvingPool_PurchaseAmount[scenario_id][r] for r in range(1,nbr_revolving_pools+1)]))
-                                                     ]  
-                logger.info('CDR_all for {0} is: {1:.4%} '.format(scenario_id,self.CDR_all[scenario_id+'_All'][2]))
-            #save_to_excel(pd.DataFrame.from_dict(self.CDR_all),'RnR&CDR',wb_name)
-
+    def CDR_calc_All(self,scenario_id):
+        
+        self.CDR_all[scenario_id+'_All'] =  [self.amount_default_all[scenario_id],
+                                             (amount_total_issuance+sum([self.RevolvingPool_PurchaseAmount[scenario_id][r] for r in range(1,nbr_revolving_pools+1)])),
+                                             self.amount_default_all[scenario_id] / (amount_total_issuance+sum([self.RevolvingPool_PurchaseAmount[scenario_id][r] for r in range(1,nbr_revolving_pools+1)]))
+                                             ]  
+        logger.info('CDR_all for {0} is: {1:.4%} '.format(scenario_id,self.CDR_all[scenario_id+'_All'][2]))
 
 
 

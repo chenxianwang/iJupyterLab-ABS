@@ -12,7 +12,7 @@ from constant import ProjectName
 
 Batch_ID = str(datetime.datetime.now().hour) + str(datetime.datetime.now().minute)+str(datetime.datetime.now().second)
 
-simulation_times = 2
+simulation_times = 5
 
 days_in_a_year = 365
 amount_ReserveAcount = 1000000
@@ -126,7 +126,7 @@ for name_Tranche in ['A','B','C']:
     fees[name_Tranche]['rate'] = Bonds[name_Tranche]['rate']
 ################################################################
 
-scenarios = {}
+#scenarios = {}
 #scenarios['best'] = {'M0_2_ERM0':0.98,'M0_2_M1':0.03,'M1_2_M0M2':0.5,'M2_2_M0M3':0.6,'M3_2_M0D':0.7,'D_2_RL':0.8,'scenario_weight':0.3} 
 #scenarios['better'] = {'M0_2_ERM0':0.982,'M0_2_M1':0.035,'M1_2_M0M2':0.5,'M2_2_M0M3':0.7,'M3_2_M0D':0.7,'D_2_RL':0.85,'scenario_weight':0.2} 
 #scenarios['benchmark'] = {'M0_2_ERM0':0.985,'M0_2_M1':0.04,'M1_2_M0M2':0.5,'M2_2_M0M3':0.7,'M3_2_M0D':0.7,'D_2_RL':0.9,'scenario_weight':0.2} 

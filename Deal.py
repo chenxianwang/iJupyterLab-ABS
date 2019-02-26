@@ -9,7 +9,7 @@ from copy import deepcopy
 from collections import defaultdict
 import numpy
 from constant import wb_name,path_project,Header_Rename,Header_Rename_REVERSE
-from Params import all_asset_status,dates_recycle,dt_param,Bonds,scenarios,amount_ReserveAcount
+from Params import all_asset_status,dates_recycle,dt_param,Bonds,amount_ReserveAcount
 import pandas as pd
 import numpy as np
 from abs_util.util_general import get_logger,Condition_Satisfied_or_Not,save_to_excel,SD_with_weight
@@ -32,7 +32,7 @@ logger = get_logger(__name__)
 
 class Deal():
     
-    def __init__(self,name,date_pool_cut,date_trust_effective,scenarios):
+    def __init__(self,name,date_pool_cut,date_trust_effective):
         
         logger.info('Initializing Project....')
         self.RevolvingDeal = False
@@ -41,7 +41,6 @@ class Deal():
         self.name = name
         self.date_pool_cut = date_pool_cut
         self.date_trust_effective = date_trust_effective
-        self.scenarios = scenarios
         
         logger.info('ProjectName is: {0}'.format(self.name))
         logger.info('date_pool_cut is: {0}'.format(self.date_pool_cut))
@@ -227,6 +226,19 @@ class Deal():
         self.AP_PAcc_outstanding_O,self.AP_IAcc_outstanding_O = defaultdict(dict),defaultdict(dict)
         self.AP_PAcc_reserve_O = defaultdict(dict)
         
+        logger.info('init_oAP_Acc Done.')
+        logger.info('''oAP_ACC accounts consist of:  
+            Principal Collection Accounts:
+            self.AP_PAcc_original_O,self.AP_PAcc_actual_O,self.AP_PAcc_pay_O,self.AP_PAcc_buy_O. 
+            self.AP_PAcc_actual_O = [['ER_recycle_principal','Normal_recycle_principal','Redemption_recycle_principal',
+                                      'Overdue_1_30_recycle_principal','Overdue_31_60_recycle_principal','Overdue_61_90_recycle_principal',
+                                      'Recovery_recycle_principal']].sum(axis=1)
+            
+            The same type of accounts are also created for Interest Collection.''')
+
+    def init_oAP_scenarios(self,scenarios):
+        
+        self.scenarios = scenarios
         for scenario_id in self.scenarios.keys():
             for k in dates_recycle:
                 self.AP_PAcc_original_O[scenario_id][k],self.AP_PAcc_actual_O[scenario_id][k] = 0,0
@@ -246,18 +258,7 @@ class Deal():
                 self.AP_IAcc_overdue_61_90_currentTerm_O[scenario_id][k],self.AP_IAcc_overdue_61_90_allTerm_O[scenario_id][k] = 0,0
                 self.AP_IAcc_loss_currentTerm_O[scenario_id][k],self.AP_IAcc_loss_allTerm_O[scenario_id][k] = 0,0
                 
-                self.AP_IAcc_outstanding_O[scenario_id][k] = 0       
-                
-        logger.info('init_oAP_Acc Done.')
-        logger.info('''oAP_ACC accounts consist of:  
-            Principal Collection Accounts:
-            self.AP_PAcc_original_O,self.AP_PAcc_actual_O,self.AP_PAcc_pay_O,self.AP_PAcc_buy_O. 
-            self.AP_PAcc_actual_O = [['ER_recycle_principal','Normal_recycle_principal','Redemption_recycle_principal',
-                                      'Overdue_1_30_recycle_principal','Overdue_31_60_recycle_principal','Overdue_61_90_recycle_principal',
-                                      'Recovery_recycle_principal']].sum(axis=1)
-            
-            The same type of accounts are also created for Interest Collection.''')
-
+                self.AP_IAcc_outstanding_O[scenario_id][k] = 0   
             
     def adjust_oAPCF(self,scenario_id,asset_status,dt_pool_cut):        
         logger.info('get_adjust_oAPCF_simulation for scenario_id {0}...'.format(scenario_id))
@@ -309,6 +310,7 @@ class Deal():
              self.AP_PAcc_actual_O[scenario_id][k] = self.AP_PAcc_actual_O[scenario_id][k] / simulation_times
              self.AP_PAcc_pay_O[scenario_id][k] = self.AP_PAcc_pay_O[scenario_id][k] / simulation_times
              self.AP_PAcc_buy_O[scenario_id][k] = self.AP_PAcc_buy_O[scenario_id][k] / simulation_times
+             
              self.AP_PAcc_overdue_1_30_currentTerm_O[scenario_id][k] = self.AP_PAcc_overdue_1_30_currentTerm_O[scenario_id][k] / simulation_times
              self.AP_PAcc_overdue_1_30_allTerm_O[scenario_id][k] = self.AP_PAcc_overdue_1_30_allTerm_O[scenario_id][k] / simulation_times
              self.AP_PAcc_overdue_31_60_currentTerm_O[scenario_id][k] = self.AP_PAcc_overdue_31_60_currentTerm_O[scenario_id][k] / simulation_times
@@ -316,6 +318,7 @@ class Deal():
              self.AP_PAcc_overdue_61_90_currentTerm_O[scenario_id][k] = self.AP_PAcc_overdue_61_90_currentTerm_O[scenario_id][k] / simulation_times
              self.AP_PAcc_overdue_61_90_allTerm_O[scenario_id][k] = self.AP_PAcc_overdue_61_90_allTerm_O[scenario_id][k] / simulation_times
              self.AP_PAcc_loss_currentTerm_O[scenario_id][k] = self.AP_PAcc_loss_currentTerm_O[scenario_id][k] / simulation_times
+             
              self.AP_PAcc_loss_allTerm_O[scenario_id][k] = self.AP_PAcc_loss_allTerm_O[scenario_id][k] / simulation_times
              self.AP_PAcc_outstanding_O[scenario_id][k] = self.AP_PAcc_outstanding_O[scenario_id][k] / simulation_times
              self.AP_PAcc_reserve_O[scenario_id][k] = self.AP_PAcc_reserve_O[scenario_id][k] / simulation_times
@@ -324,6 +327,7 @@ class Deal():
              self.AP_IAcc_actual_O[scenario_id][k] = self.AP_IAcc_actual_O[scenario_id][k] / simulation_times
              self.AP_IAcc_pay_O[scenario_id][k] = self.AP_IAcc_pay_O[scenario_id][k] / simulation_times
              self.AP_IAcc_buy_O[scenario_id][k] = self.AP_IAcc_buy_O[scenario_id][k] / simulation_times
+             
              self.AP_IAcc_overdue_1_30_currentTerm_O[scenario_id][k] = self.AP_IAcc_overdue_1_30_currentTerm_O[scenario_id][k] / simulation_times
              self.AP_IAcc_overdue_1_30_allTerm_O[scenario_id][k] = self.AP_IAcc_overdue_1_30_allTerm_O[scenario_id][k] / simulation_times
              self.AP_IAcc_overdue_31_60_currentTerm_O[scenario_id][k] = self.AP_IAcc_overdue_31_60_currentTerm_O[scenario_id][k] / simulation_times
@@ -334,7 +338,20 @@ class Deal():
              self.AP_IAcc_loss_allTerm_O[scenario_id][k] = self.AP_IAcc_loss_allTerm_O[scenario_id][k] / simulation_times
              self.AP_IAcc_outstanding_O[scenario_id][k] = self.AP_IAcc_outstanding_O[scenario_id][k] / simulation_times
         
-        self.df_AP_PAcc_actual_O_DeSimu = pd.DataFrame(list(self.AP_PAcc_actual_O[scenario_id].items()), columns=['date_recycle', 'principal_recycle_total'])
+        _AP_PAcc_actual_O = pd.DataFrame(list(self.AP_PAcc_actual_O[scenario_id].items()), columns=['date_recycle', 'principal_recycle_total'])
+        _AP_PAcc_overdue_1_30_allTerm_O = pd.DataFrame(list(self.AP_PAcc_overdue_1_30_allTerm_O[scenario_id].items()), columns=['date_recycle', 'principal_overdue_1_30'])
+        _AP_PAcc_overdue_31_60_allTerm_O = pd.DataFrame(list(self.AP_PAcc_overdue_31_60_allTerm_O[scenario_id].items()), columns=['date_recycle', 'principal_overdue_31_60'])
+        _AP_PAcc_overdue_61_90_allTerm_O = pd.DataFrame(list(self.AP_PAcc_overdue_61_90_allTerm_O[scenario_id].items()), columns=['date_recycle', 'principal_overdue_61_90'])
+        _AP_PAcc_loss_allTerm_O = pd.DataFrame(list(self.AP_PAcc_loss_allTerm_O[scenario_id].items()), columns=['date_recycle', 'principal_loss_allTerm'])
+        _AP_PAcc_outstanding_O = pd.DataFrame(list(self.AP_PAcc_outstanding_O[scenario_id].items()), columns=['date_recycle', 'principal_outstanding'])
+        
+        self.df_AP_PAcc_actual_O_DeSimu = _AP_PAcc_actual_O\
+                    .merge(_AP_PAcc_overdue_1_30_allTerm_O,left_on='date_recycle',right_on='date_recycle',how='outer')\
+                    .merge(_AP_PAcc_overdue_31_60_allTerm_O,left_on='date_recycle',right_on='date_recycle',how='outer')\
+                    .merge(_AP_PAcc_overdue_61_90_allTerm_O,left_on='date_recycle',right_on='date_recycle',how='outer')\
+                    .merge(_AP_PAcc_loss_allTerm_O,left_on='date_recycle',right_on='date_recycle',how='outer')\
+                    .merge(_AP_PAcc_outstanding_O,left_on='date_recycle',right_on='date_recycle',how='outer')\
+        
         
     def CDR_calc_O(self,scenario_id):
 
@@ -411,7 +428,7 @@ class Deal():
              
     def cal_RnR(self):
          
-        scenarios_weight = [scenarios[scenario_id]['scenario_weight'] for scenario_id in self.scenarios.keys()]
+        scenarios_weight = [self.scenarios[scenario_id]['scenario_weight'] for scenario_id in self.scenarios.keys()]
         
         NPV_originator = [self.wf_NPVs[scenario_id]['NPV_originator'][0] for scenario_id in self.scenarios.keys()]
         NPV_asset_pool = [self.wf_NPVs[scenario_id]['NPV_asset_pool'][0] for scenario_id in self.scenarios.keys()]

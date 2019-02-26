@@ -6,9 +6,9 @@ Created on Mon Jun 18 19:57:55 2018
 """
 import sys
 import os
-from constant import wb_name
+from constant import wb_name,path_root,ProjectName
 from copy import deepcopy
-from Params import scenarios,Redeem_or_Not,dt_param,amount_ReserveAcount,Batch_ID,POOL_CUT_PERIOD
+from Params import Redeem_or_Not,dt_param,amount_ReserveAcount,Batch_ID,POOL_CUT_PERIOD
 import pandas as pd
 import numpy as np
 from abs_util.util_general import get_next_eom,save_to_excel,get_logger
@@ -129,7 +129,14 @@ class APCF_adjuster():
                 _ppmt_M3_2_M0[date_r],_ppmt_M3_2_M0[dates_recycle_list[date_r_index-1]],_ppmt_M3_2_M0[dates_recycle_list[date_r_index-2]],_ppmt_M3_2_M0[dates_recycle_list[date_r_index-3]] = 0,0,0,0
                 _ipmt_M3_2_M0[date_r],_ipmt_M3_2_M0[dates_recycle_list[date_r_index-1]],_ipmt_M3_2_M0[dates_recycle_list[date_r_index-2]],_ipmt_M3_2_M0[dates_recycle_list[date_r_index-3]] = 0,0,0,0
 
+            if OoR == 'O' and date_r_index == 0:
+                ppmt_M0.to_csv(path_root  + '/DataSource/' +ProjectName+'/' + 'ppmt_M0_pre.csv')
+                
             ppmt_M0,ipmt_M0,ppmt_M1,ipmt_M1 = self.transit_Status(ppmt_M0,ipmt_M0,OoR,date_r_index,'M0_2_M1','Overdue')
+            
+            if OoR == 'O' and date_r_index == 0:
+                ppmt_M0.to_csv(path_root  + '/DataSource/' +ProjectName+'/' + 'ppmt_M0_post.csv')
+                ppmt_M1.to_csv(path_root  + '/DataSource/' +ProjectName+'/' + 'ppmt_M1.csv')
             
             if date_r_index > 2:
                 ppmt_M0 = ppmt_M0.append(_ppmt_M1_2_M0).append(_ppmt_M2_2_M0).append(_ppmt_M3_2_M0,ignore_index=True)
@@ -245,7 +252,9 @@ class APCF_adjuster():
         #logger.info('date_r_index is {0},transit_down is {1}'.format(date_r_index,transit_down))
         
         transit_down = self.calc_transit_down(transit_down,transition,date_r_index)
-        #logger.info('date_r_index is {0},transit_down is {1}'.format(date_r_index,transit_down))
+        
+        if transition == 'M0_2_M1' and OoR == 'O' and date_r_index == 0:
+            logger.info('date_r_index is {0},transit_down is {1}'.format(date_r_index,transit_down))
         
         first_due_period = 'first_due_period_'+OoR
         
@@ -253,11 +262,16 @@ class APCF_adjuster():
         
         ppmt_this[FLAG + '_'+str(date_r_index)] = pd.DataFrame(deepcopy(list(bernoulli.rvs(size=len(ppmt_this),p= (1-transit_down)))),columns=['bernollio_col'])            
         
+        if transition == 'M0_2_M1' and OoR == 'O' and date_r_index == 0:
+            logger.info('counts of ppmt_this_pre is {0}'.format(ppmt_this[FLAG + '_'+str(date_r_index)].count()))
+            logger.info('date_r_index is {0},sum of bernollio_col is {1}'.format(date_r_index,ppmt_this[FLAG + '_'+str(date_r_index)].sum()))
+        
         if FLAG == 'Overdue':# and transition != 'D_2_RL':   
             ppmt_this[FLAG + '_'+str(date_r_index)] = ppmt_this[FLAG + '_'+str(date_r_index)].where(ppmt_this[first_due_period] <= date_r_index,1)
         
         ipmt_this[FLAG + '_'+str(date_r_index)] = ppmt_this[FLAG + '_'+str(date_r_index)]
         
+        # 0 indicates dead ( overdue ), 1 indicates alive ( normal ) 
         ppmt_pre,ipmt_pre = ppmt_this[ppmt_this[FLAG + '_'+str(date_r_index)]==1],ipmt_this[ipmt_this[FLAG + '_'+str(date_r_index)]==1]
         ppmt_next,ipmt_next = ppmt_this[ppmt_this[FLAG + '_'+str(date_r_index)]==0],ipmt_this[ipmt_this[FLAG + '_'+str(date_r_index)]==0]
         
@@ -288,11 +302,11 @@ class APCF_adjuster():
             else: 
                 if transition in ['M0_2_M1','M0_2_ERM0','M1_2_M0M2','M2_2_M0M3','M3_2_M0D','D_2_RL']: transit_down = 1
                 else: pass
-        elif self.asset_status == '正常贷款' :
-            if date_r_index > 0:pass
-            else: 
-                if transition == 'M0_2_M1':transit_down *= ((get_next_eom(self.pool_cut_date,0)-self.pool_cut_date).days+1) / get_next_eom(self.pool_cut_date,0).day
-                elif transition == 'M0_2_ERM0':transit_down = 1 - (1-transit_down)*((get_next_eom(self.pool_cut_date,0)-self.pool_cut_date).days+1) / get_next_eom(self.pool_cut_date,0).day
+        elif self.asset_status == '正常贷款' : pass
+#            if date_r_index > 0:pass
+#            else: 
+#                if transition == 'M0_2_M1':transit_down *= ((get_next_eom(self.pool_cut_date,0)-self.pool_cut_date).days+1) / get_next_eom(self.pool_cut_date,0).day
+#                elif transition == 'M0_2_ERM0':transit_down = 1 - (1-transit_down)*((get_next_eom(self.pool_cut_date,0)-self.pool_cut_date).days+1) / get_next_eom(self.pool_cut_date,0).day
         #logger.info('transit_down is {0} for dates_recycle_list[date_r_index] {1} for M0_2_M1 '.format(transit_down,self.dates_recycle_list[date_r_index]))
         
         return transit_down

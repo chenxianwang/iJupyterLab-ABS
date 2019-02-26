@@ -33,7 +33,8 @@ def main():
     if os.path.isfile(wb_name):
       os.remove(wb_name)
 #
-    RD = RevolvingDeal(ProjectName,dt_param['dt_pool_cut'],dt_param['dt_trust_effective'],Flag_RevolvingDeal,date_revolving_pools_cut,scenarios)
+
+    RD = RevolvingDeal(ProjectName,dt_param['dt_pool_cut'],dt_param['dt_trust_effective'],Flag_RevolvingDeal,date_revolving_pools_cut)
 #    
     #RD.get_AssetPool(['ABS11_r2201902181346320','ABS11_r2201902181346321','ABS11_r2201902181346322'])#'ABS10left2nd'])#'ABS11_r2201902011521110','ABS11_r2201902011521111','ABS11_r2201902011521112'])#'ABS11_r1201901041147590','ABS11_r1201901041147591','ABS11_r1201901041147592','ABS11_r1201901041147593','ABS11_r1201901041147594','ABS11_r1201901041147595'])#'abs9_rvg6_contract_list_0','abs9_rvg6_contract_list_1','abs9_rvg6_contract_list_2'])#'abs11_rvg1_contract_list_0','abs11_rvg1_contract_list_1','abs11_rvg1_contract_list_2'])
     RD.get_AssetPool(['part_1','part_2'])
@@ -77,8 +78,11 @@ def main():
             #save_to_excel(RD.apcf_original_structure[asset_status],'cf_o_structure',wb_name)
     
     scenarios = {}
-    scenarios['best'] = {'M0_2_ERM0':0.98,'M0_2_M1':0.03,'M1_2_M0M2':0.5,'M2_2_M0M3':0.6,'M3_2_M0D':0.7,'D_2_RL':0.8,'scenario_weight':0.3} 
-        
+    scenarios['best'] = {'M0_2_ERM0':0.99,'M0_2_M1':0.022,'M1_2_M0M2':0.5,'M2_2_M0M3':0.6,'M3_2_M0D':0.7,'D_2_RL':0.8,'scenario_weight':0.7} 
+    #scenarios['worst'] = {'M0_2_ERM0':0.99,'M0_2_M1':0.05,'M1_2_M0M2':0.5,'M2_2_M0M3':0.7,'M3_2_M0D':0.7,'D_2_RL':0.99,'scenario_weight':0.3} 
+
+    RD.init_oAP_scenarios(scenarios)
+    
     for asset_status in all_asset_status:
         if len(RD.asset_pool[(RD.asset_pool['贷款状态'] == asset_status)]) == 0:
             logger.info('No Assets to calc for {0}'.format(asset_status))
@@ -103,72 +107,84 @@ def main():
         logger.info('CDR_calc_O...for {0}...'.format(scenario_id))
         RD.CDR_calc_O(scenario_id)
     save_to_excel(pd.DataFrame.from_dict(RD.CDR_O),'RnR&CDR',wb_name)
+##            
+#########
+#    RD.get_rAPCF_structure()
+#    
+#    RD.init_rAP_scenarios(scenarios)
+#    
+#    RD.init_rAP_Acc()
+#
+#    for scenario_id in scenarios.keys():
+#        logger.info('forcast_Revolving_APCF for scenario_id {0}...'.format(scenario_id))  
+#        if RD.RevolvingDeal is not True:
+#            pass
+#        else:
+#                for which_revolving_pool in range(1,len(RD.date_revolving_pools_cut) + 1):
+#                    #logger.info('forcast_Revolving_APCF for which_revolving_pool {0}...'.format(which_revolving_pool))
+#                    purchase_amount = RD.prepare_PurchaseAmount(which_revolving_pool,scenario_id)
+#                    apcf_revolving_structure = deepcopy(RD.apcf_revolving_structure)
+#                    
+#                    RD.prepare_revolving_pool(scenario_id,which_revolving_pool,purchase_amount,apcf_revolving_structure)
+#
+#                    APCFa = APCF_adjuster(RD.scenarios,scenario_id,RD.apcf_revolving[scenario_id][which_revolving_pool],
+#                                          RD.df_ppmt[scenario_id][which_revolving_pool],RD.df_ipmt[scenario_id][which_revolving_pool],
+#                                          RD.dates_recycle_list_revolving[scenario_id][which_revolving_pool],date_revolving_pools_cut[which_revolving_pool-1],asset_status_for_revolving)
+#                    RD.apcf_revolving_adjusted[scenario_id][which_revolving_pool],RD.APCF_R_adjusted_save[scenario_id][which_revolving_pool] = APCFa.adjust_APCF('R')
+#                    #save_to_excel(self.apcf_revolving_adjusted[scenario_id][which_revolving_pool],'rAPCFa_' + scenario_id + str(which_revolving_pool),wb_name)
 #            
-########
-    RD.get_rAPCF_structure()
-    RD.init_rAP_Acc()
-
-    for scenario_id in scenarios.keys():
-        logger.info('forcast_Revolving_APCF for scenario_id {0}...'.format(scenario_id))  
-        if RD.RevolvingDeal is not True:
-            pass
-        else:
-                for which_revolving_pool in range(1,len(RD.date_revolving_pools_cut) + 1):
-                    #logger.info('forcast_Revolving_APCF for which_revolving_pool {0}...'.format(which_revolving_pool))
-                    purchase_amount = RD.prepare_PurchaseAmount(which_revolving_pool,scenario_id)
-                    apcf_revolving_structure = deepcopy(RD.apcf_revolving_structure)
-                    
-                    RD.prepare_revolving_pool(scenario_id,which_revolving_pool,purchase_amount,apcf_revolving_structure)
-
-                    APCFa = APCF_adjuster(RD.scenarios,scenario_id,RD.apcf_revolving[scenario_id][which_revolving_pool],
-                                          RD.df_ppmt[scenario_id][which_revolving_pool],RD.df_ipmt[scenario_id][which_revolving_pool],
-                                          RD.dates_recycle_list_revolving[scenario_id][which_revolving_pool],date_revolving_pools_cut[which_revolving_pool-1],asset_status_for_revolving)
-                    RD.apcf_revolving_adjusted[scenario_id][which_revolving_pool],RD.APCF_R_adjusted_save[scenario_id][which_revolving_pool] = APCFa.adjust_APCF('R')
-                    #save_to_excel(self.apcf_revolving_adjusted[scenario_id][which_revolving_pool],'rAPCFa_' + scenario_id + str(which_revolving_pool),wb_name)
-            
-                    RD.update_rAP_acc(scenario_id,which_revolving_pool)
-    
-    for scenario_id in scenarios.keys():
-        logger.info('forcast_Revolving_APCF for scenario_id {0}...'.format(scenario_id)) 
-        RD.adjusted_all_rAP(scenario_id)    
-    
-    for scenario_id in scenarios.keys():
-        logger.info('forcast_Revolving_APCF for scenario_id {0}...'.format(scenario_id))  
-        RD.CDR_calc_R(scenario_id)
-        
-    RD.get_AP_pay_buy_allocation()    
-        
-    RD.init_Liability_Acc(fees)
-#   
-    #RD.run_WaterFall()    # RD.waterfall[scenario_id] is available
-    for scenario_id in scenarios.keys():
-        logger.info('scenario_id is {0}'.format(scenario_id))
-        RD.waterfall[scenario_id],RD.reserveAccount_used[scenario_id] = run_Accounts(RD.AP_PAcc_original[scenario_id],RD.AP_PAcc_actual[scenario_id],
-                                                   RD.AP_PAcc_pay[scenario_id],RD.AP_PAcc_buy[scenario_id],
-                                                   RD.AP_IAcc_original[scenario_id],RD.AP_IAcc_actual[scenario_id],
-                                                   RD.AP_IAcc_pay[scenario_id],RD.AP_IAcc_buy[scenario_id],
-                                                   RD.AP_PAcc_outstanding[scenario_id],RD.AP_PAcc_reserve[scenario_id],#self.AP_PAcc_loss_allTerm[scenario_id],
-                                                   scenario_id,RD.RevolvingDeal,RD.Liability_Acc,RD.RevolvingPool_PurchaseAmount
-                                                   )
-         
-        RD.wf_BasicInfo[scenario_id] = deepcopy(BasicInfo_calculator(RD.waterfall[scenario_id],dt_param,Bonds))
-        RD.wf_CoverRatio[scenario_id] = deepcopy(CR_calculator(RD.waterfall[scenario_id],RD.AP_PAcc_pay[scenario_id],RD.AP_IAcc_pay[scenario_id]))
-        RD.wf_NPVs[scenario_id] = deepcopy(NPV_calculator(RD.waterfall[scenario_id],RD.AP_PAcc_pay[scenario_id],RD.AP_IAcc_pay[scenario_id]))
-        RD.reserveAccount_used[scenario_id] = pd.DataFrame.from_dict(RD.reserveAccount_used[scenario_id])
-    
-    
-    for scenario_id in scenarios.keys():
-        logger.info('Saving results for scenario {0} '.format(scenario_id))
-        save_to_excel(RD.waterfall[scenario_id],scenario_id,wb_name)
-        save_to_excel(RD.wf_BasicInfo[scenario_id],scenario_id,wb_name)
-        save_to_excel(RD.wf_CoverRatio[scenario_id],scenario_id,wb_name)
-        save_to_excel(RD.wf_NPVs[scenario_id],scenario_id,wb_name)
-        save_to_excel(RD.reserveAccount_used[scenario_id],scenario_id,wb_name)
-        save_to_excel(RD.AP_pay_buy_allocation[scenario_id],scenario_id,wb_name)
-    
-    RnR = RD.cal_RnR()
-    logger.info('RnR is: %s' % RnR)
-    save_to_excel(pd.DataFrame({'RnR':[RnR]}),'RnR&CDR',wb_name)
+#                    RD.update_rAP_acc(scenario_id,which_revolving_pool)
+#    
+#    for scenario_id in scenarios.keys():
+#        logger.info('forcast_Revolving_APCF for scenario_id {0}...'.format(scenario_id)) 
+#        RD.adjusted_all_rAP(scenario_id)    
+#        
+#        save_to_excel(pd.DataFrame.from_dict(RD.apcf_revolving_adjusted_all[scenario_id]),'Adjusted_all_rAP',wb_name)
+#
+#    
+#    for scenario_id in scenarios.keys():
+#        logger.info('forcast_Revolving_APCF for scenario_id {0}...'.format(scenario_id))  
+#        RD.CDR_calc_R(scenario_id)
+#        save_to_excel(pd.DataFrame.from_dict(RD.CDR_R[scenario_id]),'RnR&CDR',wb_name)
+#        
+#    for scenario_id in scenarios.keys():
+#        RD.CDR_calc_All(scenario_id)
+#        
+#    save_to_excel(pd.DataFrame.from_dict(RD.CDR_all),'RnR&CDR',wb_name)
+#        
+#    RD.get_AP_pay_buy_allocation()    
+#        
+#    RD.init_Liability_Acc(fees)
+##   
+#    #RD.run_WaterFall()    # RD.waterfall[scenario_id] is available
+#    for scenario_id in scenarios.keys():
+#        logger.info('scenario_id is {0}'.format(scenario_id))
+#        RD.waterfall[scenario_id],RD.reserveAccount_used[scenario_id] = run_Accounts(RD.AP_PAcc_original[scenario_id],RD.AP_PAcc_actual[scenario_id],
+#                                                   RD.AP_PAcc_pay[scenario_id],RD.AP_PAcc_buy[scenario_id],
+#                                                   RD.AP_IAcc_original[scenario_id],RD.AP_IAcc_actual[scenario_id],
+#                                                   RD.AP_IAcc_pay[scenario_id],RD.AP_IAcc_buy[scenario_id],
+#                                                   RD.AP_PAcc_outstanding[scenario_id],RD.AP_PAcc_reserve[scenario_id],#self.AP_PAcc_loss_allTerm[scenario_id],
+#                                                   scenario_id,RD.RevolvingDeal,RD.Liability_Acc,RD.RevolvingPool_PurchaseAmount
+#                                                   )
+#         
+#        RD.wf_BasicInfo[scenario_id] = deepcopy(BasicInfo_calculator(RD.waterfall[scenario_id],dt_param,Bonds))
+#        RD.wf_CoverRatio[scenario_id] = deepcopy(CR_calculator(RD.waterfall[scenario_id],RD.AP_PAcc_pay[scenario_id],RD.AP_IAcc_pay[scenario_id]))
+#        RD.wf_NPVs[scenario_id] = deepcopy(NPV_calculator(RD.waterfall[scenario_id],RD.AP_PAcc_pay[scenario_id],RD.AP_IAcc_pay[scenario_id]))
+#        RD.reserveAccount_used[scenario_id] = pd.DataFrame.from_dict(RD.reserveAccount_used[scenario_id])
+#    
+#    
+#    for scenario_id in scenarios.keys():
+#        logger.info('Saving results for scenario {0} '.format(scenario_id))
+#        save_to_excel(RD.waterfall[scenario_id],scenario_id,wb_name)
+#        save_to_excel(RD.wf_BasicInfo[scenario_id],scenario_id,wb_name)
+#        save_to_excel(RD.wf_CoverRatio[scenario_id],scenario_id,wb_name)
+#        save_to_excel(RD.wf_NPVs[scenario_id],scenario_id,wb_name)
+#        save_to_excel(RD.reserveAccount_used[scenario_id],scenario_id,wb_name)
+#        save_to_excel(RD.AP_pay_buy_allocation[scenario_id],scenario_id,wb_name)
+#    
+#    RnR = RD.cal_RnR()
+#    logger.info('RnR is: %s' % RnR)
+#    save_to_excel(pd.DataFrame({'RnR':[RnR]}),'RnR&CDR',wb_name)
 #    
     end_time = datetime.datetime.now()   
     time_elapsed = end_time - start_time
