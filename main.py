@@ -38,7 +38,8 @@ def main():
 #    
     #RD.get_AssetPool(['ABS11_r2201902181346320','ABS11_r2201902181346321','ABS11_r2201902181346322'])#'ABS10left2nd'])#'ABS11_r2201902011521110','ABS11_r2201902011521111','ABS11_r2201902011521112'])#'ABS11_r1201901041147590','ABS11_r1201901041147591','ABS11_r1201901041147592','ABS11_r1201901041147593','ABS11_r1201901041147594','ABS11_r1201901041147595'])#'abs9_rvg6_contract_list_0','abs9_rvg6_contract_list_1','abs9_rvg6_contract_list_2'])#'abs11_rvg1_contract_list_0','abs11_rvg1_contract_list_1','abs11_rvg1_contract_list_2'])
     RD.get_AssetPool(['part_1','part_2'])
-#
+
+    #print(RD.asset_pool[:5])
 #    RD.select_by_ContractNO('exclude',['ABS11r2_selected_to_Trust_20190203_1time(fyr)']) 
 #
 #    RD.add_Columns([

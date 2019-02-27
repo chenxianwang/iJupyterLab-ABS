@@ -54,7 +54,7 @@ class Deal():
         self.apcf_original,self.apcf_original_structure = {},{}
         self.df_ppmt,self.df_ipmt = {},{}
         
-        self.df_AP_PAcc_actual_O_DeSimu = pd.DataFrame() 
+        self.df_AP_PAcc_actual_O_DeSimu = {}
         
         #for each asset status and each scenario
         self.apcf_original_adjusted,self.APCF_adjusted_save = {},{}
@@ -91,7 +91,7 @@ class Deal():
             
             #print(list(AssetPool_this.columns.values))
             
-            self.asset_pool = self.asset_pool.append(AssetPool_this,ignore_index=True)
+            self.asset_pool = self.asset_pool.append(AssetPool_this,ignore_index=True,sort=True)
             #AssetPool['#合同号'] = '#' + AssetPool['#合同号'].astype(str)
             #self.asset_pool['No_Contract'] = '#' + self.asset_pool['No_Contract'].astype(str) 
        
@@ -345,7 +345,7 @@ class Deal():
         _AP_PAcc_loss_allTerm_O = pd.DataFrame(list(self.AP_PAcc_loss_allTerm_O[scenario_id].items()), columns=['date_recycle', 'principal_loss_allTerm'])
         _AP_PAcc_outstanding_O = pd.DataFrame(list(self.AP_PAcc_outstanding_O[scenario_id].items()), columns=['date_recycle', 'principal_outstanding'])
         
-        self.df_AP_PAcc_actual_O_DeSimu = _AP_PAcc_actual_O\
+        self.df_AP_PAcc_actual_O_DeSimu[scenario_id] = _AP_PAcc_actual_O\
                     .merge(_AP_PAcc_overdue_1_30_allTerm_O,left_on='date_recycle',right_on='date_recycle',how='outer')\
                     .merge(_AP_PAcc_overdue_31_60_allTerm_O,left_on='date_recycle',right_on='date_recycle',how='outer')\
                     .merge(_AP_PAcc_overdue_61_90_allTerm_O,left_on='date_recycle',right_on='date_recycle',how='outer')\
