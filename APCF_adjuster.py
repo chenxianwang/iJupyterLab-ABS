@@ -139,14 +139,14 @@ class APCF_adjuster():
                 ppmt_M1.to_csv(path_root  + '/DataSource/' +ProjectName+'/' + 'ppmt_M1.csv')
             
             if date_r_index > 2:
-                ppmt_M0 = ppmt_M0.append(_ppmt_M1_2_M0).append(_ppmt_M2_2_M0).append(_ppmt_M3_2_M0,ignore_index=True)
-                ipmt_M0 = ipmt_M0.append(_ipmt_M1_2_M0).append(_ipmt_M2_2_M0).append(_ipmt_M3_2_M0,ignore_index=True)
+                ppmt_M0 = ppmt_M0.append(_ppmt_M1_2_M0,sort = True).append(_ppmt_M2_2_M0,sort = True).append(_ppmt_M3_2_M0,ignore_index=True,sort = True)
+                ipmt_M0 = ipmt_M0.append(_ipmt_M1_2_M0,sort = True).append(_ipmt_M2_2_M0,sort = True).append(_ipmt_M3_2_M0,ignore_index=True,sort = True)
             elif date_r_index > 1:
-                ppmt_M0 = ppmt_M0.append(_ppmt_M1_2_M0).append(_ppmt_M2_2_M0,ignore_index=True)
-                ipmt_M0 = ipmt_M0.append(_ipmt_M1_2_M0).append(_ipmt_M2_2_M0,ignore_index=True)
+                ppmt_M0 = ppmt_M0.append(_ppmt_M1_2_M0,sort = True).append(_ppmt_M2_2_M0,ignore_index=True,sort = True)
+                ipmt_M0 = ipmt_M0.append(_ipmt_M1_2_M0,sort = True).append(_ipmt_M2_2_M0,ignore_index=True,sort = True)
             elif date_r_index > 0:
-                ppmt_M0 = ppmt_M0.append(_ppmt_M1_2_M0,ignore_index=True)
-                ipmt_M0 = ipmt_M0.append(_ipmt_M1_2_M0,ignore_index=True)
+                ppmt_M0 = ppmt_M0.append(_ppmt_M1_2_M0,ignore_index=True,sort = True)
+                ipmt_M0 = ipmt_M0.append(_ipmt_M1_2_M0,ignore_index=True,sort = True)
             else:pass
             
             #ER
@@ -260,7 +260,9 @@ class APCF_adjuster():
         
         ppmt_this,ipmt_this = ppmt_this.reset_index(drop=True),ipmt_this.reset_index(drop=True)
         
-        ppmt_this[FLAG + '_'+str(date_r_index)] = pd.DataFrame(deepcopy(list(bernoulli.rvs(size=len(ppmt_this),p= (1-transit_down)))),columns=['bernollio_col'])            
+        #ppmt_this[FLAG + '_'+str(date_r_index)] = pd.DataFrame(deepcopy(list(bernoulli.rvs(size=len(ppmt_this),p= (1-transit_down)))),columns=['bernollio_col'])            
+        
+        ppmt_this[FLAG + '_'+str(date_r_index)] = deepcopy(list(bernoulli.rvs(size=len(ppmt_this),p= (1-transit_down))))           
         
         if transition == 'M0_2_M1' and OoR == 'O' and date_r_index == 0:
             logger.info('counts of ppmt_this_pre is {0}'.format(ppmt_this[FLAG + '_'+str(date_r_index)].count()))

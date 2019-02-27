@@ -12,7 +12,7 @@ from constant import ProjectName
 
 Batch_ID = str(datetime.datetime.now().hour) + str(datetime.datetime.now().minute)+str(datetime.datetime.now().second)
 
-simulation_times = 5
+simulation_times = 1
 
 days_in_a_year = 365
 amount_ReserveAcount = 1000000
