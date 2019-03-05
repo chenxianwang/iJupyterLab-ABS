@@ -129,14 +129,14 @@ class APCF_adjuster():
                 _ppmt_M3_2_M0[date_r],_ppmt_M3_2_M0[dates_recycle_list[date_r_index-1]],_ppmt_M3_2_M0[dates_recycle_list[date_r_index-2]],_ppmt_M3_2_M0[dates_recycle_list[date_r_index-3]] = 0,0,0,0
                 _ipmt_M3_2_M0[date_r],_ipmt_M3_2_M0[dates_recycle_list[date_r_index-1]],_ipmt_M3_2_M0[dates_recycle_list[date_r_index-2]],_ipmt_M3_2_M0[dates_recycle_list[date_r_index-3]] = 0,0,0,0
 
-            if OoR == 'O' and date_r_index == 0:
-                ppmt_M0.to_csv(path_root  + '/DataSource/' +ProjectName+'/' + 'ppmt_M0_pre.csv')
+            #if OoR == 'O' and date_r_index == 0:
+                #ppmt_M0.to_csv(path_root  + '/DataSource/' +ProjectName+'/' + 'ppmt_M0_pre.csv')
                 
             ppmt_M0,ipmt_M0,ppmt_M1,ipmt_M1 = self.transit_Status(ppmt_M0,ipmt_M0,OoR,date_r_index,'M0_2_M1','Overdue')
             
-            if OoR == 'O' and date_r_index == 0:
-                ppmt_M0.to_csv(path_root  + '/DataSource/' +ProjectName+'/' + 'ppmt_M0_post.csv')
-                ppmt_M1.to_csv(path_root  + '/DataSource/' +ProjectName+'/' + 'ppmt_M1.csv')
+            #if OoR == 'O' and date_r_index == 0:
+                #ppmt_M0.to_csv(path_root  + '/DataSource/' +ProjectName+'/' + 'ppmt_M0_post.csv')
+                #ppmt_M1.to_csv(path_root  + '/DataSource/' +ProjectName+'/' + 'ppmt_M1.csv')
             
             if date_r_index > 2:
                 ppmt_M0 = ppmt_M0.append(_ppmt_M1_2_M0,sort = True).append(_ppmt_M2_2_M0,sort = True).append(_ppmt_M3_2_M0,ignore_index=True,sort = True)
