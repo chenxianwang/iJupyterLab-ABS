@@ -27,15 +27,15 @@ if ProjectName == 'ABS9':
     rate_discount = 0.2
     dt_param = {'dt_pool_cut':datetime.date(2018,4,16),'dt_trust_effective':datetime.date(2018,7,24)}
 
-elif ProjectName == 'ABS9_following':
-    amount_total_issuance = 3015926877.69
+elif ProjectName == 'ABS13':
+    amount_total_issuance = 2500151269.5
     Bonds = {}
-    Bonds['A'] = {'ptg':0.6714,'amount':2025000000, 'rate':0.05750}
-    Bonds['B'] = {'ptg':0.1107,'amount':334000000,'rate':0.07190}
-    Bonds['C'] = {'ptg':0.2178,'amount':656926877.69,'rate':0.0}
+    Bonds['A'] = {'ptg':0.6714,'amount':2500151269.5*0.6714, 'rate':0.05750}
+    Bonds['B'] = {'ptg':0.1107,'amount':2500151269.5*0.1107,'rate':0.07190}
+    Bonds['C'] = {'ptg':0.2178,'amount':2500151269.5*(1-0.6714-0.1107),'rate':0.0}
     Bonds['EE'] = {'ptg':0,'amount':100000000000,'rate':0.0}
-    rate_discount = 0.2
-    dt_param = {'dt_pool_cut':datetime.date(2019,1,1),'dt_trust_effective':datetime.date(2019,1,1)}
+    rate_discount = 0.207
+    dt_param = {'dt_pool_cut':datetime.date(2019,3,1),'dt_trust_effective':datetime.date(2019,5,20)}
     
 elif ProjectName == 'ABS10':
     amount_total_issuance = 3014292721.30
