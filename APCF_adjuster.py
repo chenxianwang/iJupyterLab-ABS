@@ -253,8 +253,8 @@ class APCF_adjuster():
         
         transit_down = self.calc_transit_down(transit_down,transition,date_r_index)
         
-        if transition == 'M0_2_M1' and OoR == 'O' and date_r_index == 0:
-            logger.info('date_r_index is {0},transit_down is {1}'.format(date_r_index,transit_down))
+#        if transition == 'M0_2_M1' and OoR == 'O' and date_r_index == 0:
+#            logger.info('date_r_index is {0},transit_down is {1}'.format(date_r_index,transit_down))
         
         first_due_period = 'first_due_period_'+OoR
         
@@ -264,9 +264,9 @@ class APCF_adjuster():
         
         ppmt_this[FLAG + '_'+str(date_r_index)] = deepcopy(list(bernoulli.rvs(size=len(ppmt_this),p= (1-transit_down))))           
         
-        if transition == 'M0_2_M1' and OoR == 'O' and date_r_index == 0:
-            logger.info('counts of ppmt_this_pre is {0}'.format(ppmt_this[FLAG + '_'+str(date_r_index)].count()))
-            logger.info('date_r_index is {0},sum of bernollio_col is {1}'.format(date_r_index,ppmt_this[FLAG + '_'+str(date_r_index)].sum()))
+#        if transition == 'M0_2_M1' and OoR == 'O' and date_r_index == 0:
+#            logger.info('counts of ppmt_this_pre is {0}'.format(ppmt_this[FLAG + '_'+str(date_r_index)].count()))
+#            logger.info('date_r_index is {0},sum of bernollio_col is {1}'.format(date_r_index,ppmt_this[FLAG + '_'+str(date_r_index)].sum()))
         
         if FLAG == 'Overdue':# and transition != 'D_2_RL':   
             ppmt_this[FLAG + '_'+str(date_r_index)] = ppmt_this[FLAG + '_'+str(date_r_index)].where(ppmt_this[first_due_period] <= date_r_index,1)

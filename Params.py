@@ -12,7 +12,7 @@ from constant import ProjectName
 
 Batch_ID = str(datetime.datetime.now().hour) + str(datetime.datetime.now().minute)+str(datetime.datetime.now().second)
 
-simulation_times = 1
+simulation_times = 2
 
 days_in_a_year = 365
 amount_ReserveAcount = 1000000
@@ -30,12 +30,12 @@ if ProjectName == 'ABS9':
 elif ProjectName == 'ABS13':
     amount_total_issuance = 2500151269.5
     Bonds = {}
-    Bonds['A'] = {'ptg':0.6714,'amount':2500151269.5*0.6714, 'rate':0.05750}
-    Bonds['B'] = {'ptg':0.1107,'amount':2500151269.5*0.1107,'rate':0.07190}
-    Bonds['C'] = {'ptg':0.2178,'amount':2500151269.5*(1-0.6714-0.1107),'rate':0.0}
+    Bonds['A'] = {'ptg':0.6841,'amount':2500151269.5*0.6841, 'rate':0.0450}
+    Bonds['B'] = {'ptg':0.0909,'amount':2500151269.5*0.0909,'rate':0.0550}
+    Bonds['C'] = {'ptg':0.2250,'amount':2500151269.5*(1-0.6841-0.0909),'rate':0.0}
     Bonds['EE'] = {'ptg':0,'amount':100000000000,'rate':0.0}
     rate_discount = 0.207
-    dt_param = {'dt_pool_cut':datetime.date(2019,3,1),'dt_trust_effective':datetime.date(2019,5,20)}
+    dt_param = {'dt_pool_cut':datetime.date(2019,3,1),'dt_trust_effective':datetime.date(2019,6,10)}
     
 elif ProjectName == 'ABS10':
     amount_total_issuance = 3014292721.30
@@ -56,16 +56,6 @@ elif ProjectName == 'ABS11':
     Bonds['EE'] = {'ptg':0,'amount':100000000000,'rate':0.0}
     rate_discount = 0.185
     dt_param = {'dt_pool_cut':datetime.date(2018,8,31),'dt_trust_effective':datetime.date(2018,12,7)}
-    
-elif ProjectName == 'ABS8':
-    amount_total_issuance = 3599052985.68
-    Bonds = {}
-    Bonds['A'] = {'ptg':0.7696,'amount':2770000000 , 'rate':0.05750}
-    Bonds['B'] = {'ptg':0.0822,'amount':296000000,'rate':0.07190}
-    Bonds['C'] = {'ptg':0.1481,'amount':533052985.68 ,'rate':0.0}
-    Bonds['EE'] = {'ptg':0,'amount':100000000000,'rate':0.0}
-    rate_discount = 0.185
-    dt_param = {'dt_pool_cut':datetime.date(2017,12,19),'dt_trust_effective':datetime.date(2018,3,23)}
     
 else: 
     amount_total_issuance = 1602166.51
@@ -115,8 +105,8 @@ all_asset_status = ['正常贷款','拖欠1-30天贷款','拖欠31-60天贷款',
 fees = { 'tax':{'rate':0.032621359223},
         'pay_interest_service':{'rate':0.00005},
         'pre_issue':{'amount':245797.32215745+500000},
-        'trustee':{'dates_to_calc':[dt_param['dt_trust_effective']]+dates_recycle,'rate':0.0005},
-        'custodian':{'dates_to_calc':[dt_param['dt_trust_effective']]+dates_recycle,'rate':0.0000539},
+        'trustee':{'dates_to_calc':[dt_param['dt_trust_effective']]+dates_recycle,'rate':0.0004},
+        'custodian':{'dates_to_calc':[dt_param['dt_trust_effective']]+dates_recycle,'rate':0.00005},
         'servicer':{'dates_to_calc':[dt_param['dt_pool_cut']]+dates_recycle,'rate':0.001},
          'A':{'dates_to_calc':[dt_param['dt_trust_effective']]+dates_pay},
          'B':{'dates_to_calc':[dt_param['dt_trust_effective']]+dates_pay},
