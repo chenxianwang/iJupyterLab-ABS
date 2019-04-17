@@ -46,7 +46,8 @@ Header_Rename = {'#合同号':'No_Contract','合同号':'No_Contract','订单号
                  '最长逾期天数':'Days_Overdue_Max','历史最大逾期天数':'Days_Overdue_Max',
                  #'IS_NEW_SERVICE_FEE_CALCULATION':'IS_NEW_SERVICE_FEE_CALCULATION',
                  '初始还款日':'Dt_First_Pay','性别':'Gender','家庭状况':'Marriagestate','历史逾期次数':'Overdue_Times','贷款发放时借款人年龄':'Age_Loan_Start',
-                 #'业务品种':'Type_Loans','G1:产品类型':'Type_Loans',#'贷款状态':'贷款状态',
+                 #'业务品种':'Type_Loans','G1:产品类型':'Type_Loans',
+                 '贷款状态':'贷款状态',
                           }
 
 sr_recycle_rename = {'E1:正常回收':'E1：正常回收','E2：提前还款':'E2：提前还款','E3:拖欠回收':'E3；拖欠回收','E4:违约回收':'E4：违约回收','E5:账务处理':'E5：账务处理',
@@ -80,7 +81,7 @@ Header_Rename_Unique = {'#合同号':'No_Contract',
                  '贷款发放时借款人年龄':'Age_Loan_Start',
                  '性别':'Gender',
                  '家庭状况':'Marriagestate',
-                 '历史逾期次数':'Overdue_Times',
+                 '历史逾期次数':'Overdue_Times','贷款状态':'贷款状态',
                           }
 
 Header_Rename_REVERSE  = {v:k for k,v in Header_Rename_Unique.items()}
