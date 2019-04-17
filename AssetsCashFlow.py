@@ -92,7 +92,7 @@ class AssetsCashFlow():
         self.asset_pool['OutstandingPrincipal'] = self.asset_pool['Amount_Outstanding_yuan']
    
         #TODO: cut groups with OutstandingPrincipal_Proportion > 1%
-        apcf_structure = self.asset_pool.groupby([first_due_period_value,'Interest_Rate','SERVICE_FEE_RATE','Term_Remain','PayDay','ActivateMonth','Province'
+        apcf_structure = self.asset_pool.groupby([first_due_period_value,'Interest_Rate','SERVICE_FEE_RATE','Term_Remain','PayDay',#'ActivateMonth','Province'
                                                                      ])\
                                  .agg({'Amount_Outstanding_yuan':'sum'})\
                                  .reset_index()\
